@@ -3,14 +3,14 @@ name: Build and Publish Docker Image
 on:
   pull_request:
     branches:
-      - main  # CI sur PR (tests)
+      - main # CI sur PR (tests)
   push:
     branches:
-      - main  # Merge Trunk : build + push image avec SHA
+      - main # Merge Trunk : build + push image avec SHA
   release:
     types:
-      - published  # Release : build + push image avec nom de release
-  workflow_dispatch:  # Permet d'exécuter l'action manuellement
+      - published # Release : build + push image avec nom de release
+  workflow_dispatch: # Permet d'exécuter l'action manuellement
 
 jobs:
   test:
@@ -21,22 +21,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
   build-and-push:
     name: Build & Push Docker Image
-    needs: test  # Exécuter seulement si les tests réussissent
+    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'release'
+    strategy:
+      matrix:
+        service: [frontend, backend]
 
     steps:
       - name: Checkout repository
@@ -48,22 +40,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
-        run: |
-          IMAGE_NAME="jean_gmrch/musikea"
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            TAG="${{ github.event.release.tag_name }}"
-          else
-            TAG="${{ github.sha }}"
-          fi
-          docker build -t $IMAGE_NAME:$TAG .
-
-      - name: Push Docker Image
-        run: |
-          IMAGE_NAME="jean_gmrch/musikea"
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            TAG="${{ github.event.release.tag_name }}"
-          else
-            TAG="${{ github.sha }}"
-          fi
-          docker push $IMAGE_NAME:$TAG
+      - name: Build and Push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:latest
+            if [[ "${{ github.event_name }}" == "release" ]]; then
+              ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:${{ github.event.release.tag_name }}
+            else
+              ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:${{ github.sha }}
+            fi
