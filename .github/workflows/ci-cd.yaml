@@ -3,29 +3,67 @@ name: Build and Publish Docker Image
 on:
   pull_request:
     branches:
-      - main  # Exécute l'action à chaque push sur la branche principale
+      - main  # CI sur PR (tests)
+  push:
+    branches:
+      - main  # Merge Trunk : build + push image avec SHA
+  release:
+    types:
+      - published  # Release : build + push image avec nom de release
   workflow_dispatch:  # Permet d'exécuter l'action manuellement
 
 jobs:
-  build-and-push:
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout du code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Se connecter à Docker Hub
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  build-and-push:
+    name: Build & Push Docker Image
+    needs: test  # Exécuter seulement si les tests réussissent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'release'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Construire et tagger l’image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/node-js-simple:latest
-            ${{ secrets.DOCKER_USERNAME }}/node-js-simple:${{ github.sha }}
+      - name: Build Docker Image
+        run: |
+          IMAGE_NAME="jean_gmrch/musikea"
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG="${{ github.event.release.tag_name }}"
+          else
+            TAG="${{ github.sha }}"
+          fi
+          docker build -t $IMAGE_NAME:$TAG .
+
+      - name: Push Docker Image
+        run: |
+          IMAGE_NAME="jean_gmrch/musikea"
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG="${{ github.event.release.tag_name }}"
+          else
+            TAG="${{ github.sha }}"
+          fi
+          docker push $IMAGE_NAME:$TAG
