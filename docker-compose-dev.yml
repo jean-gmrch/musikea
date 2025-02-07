@@ -5,11 +5,13 @@ x-service: &service
 services:
   backend:
     <<: *service
-    image: jeangmrch:musikea-backend:latest
+    container_name: backend-dev
+    build: ./backend
 
   frontend:
     <<: *service
-    image: jeangmrch:musikea-frontend:latest
+    container_name: frontend-dev
+    build: ./frontend
     depends_on:
       - backend
   
