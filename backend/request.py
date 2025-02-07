@@ -75,7 +75,7 @@ def get_random_track():
 
 
 @app.get("/search-track")
-def search_track(query: str, start_index: int):
+def search_track(query: str, start_index: int = 0):
     """Effectue une recherche de morceaux sur Spotify"""
     token = get_access_token()
     url = f"https://api.spotify.com/v1/search?q={query}&type=track&limit=10&offset={start_index}"
