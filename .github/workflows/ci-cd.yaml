@@ -1,7 +1,7 @@
 name: Build and Publish Docker Image
 
 on:
-  push:
+  pull_request:
     branches:
       - main  # Exécute l'action à chaque push sur la branche principale
   workflow_dispatch:  # Permet d'exécuter l'action manuellement
