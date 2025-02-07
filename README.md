@@ -1,4 +1,9 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+Projet dans le cadre du cours de CI/CD, Formation INFRES, IMT Mines Alès
+
+Ce projet est un site web conteneurisé qui utilise l'API Spotify pour proposer les fonctionnalités suivantes :
+- Morceau de musique aléatoire
+- Recherche d'un morceau de musique
+- Affichage des paroles
 
 ## Getting Started
 
