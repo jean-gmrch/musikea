@@ -61,4 +61,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:latest
-            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:$DOCKER_TAG
+            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:${{ env.DOCKER_TAG }}
