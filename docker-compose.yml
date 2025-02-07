@@ -5,20 +5,20 @@ x-service: &service
 services:
   backend:
     <<: *service
-    image: jeangmrch:musikea-backend:latest
+    image: jeangmrch/musikea-backend:latest
 
   frontend:
     <<: *service
-    image: jeangmrch:musikea-frontend:latest
+    image: jeangmrch/musikea-frontend:latest
     depends_on:
       - backend
-  
+
   nginx:
     <<: *service
     image: nginx:latest
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx:/etc/nginx/conf.d
     depends_on:
       - frontend
