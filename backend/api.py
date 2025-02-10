@@ -114,7 +114,7 @@ def get_random_track():
     return result.json()["data"]["track"]["id"]
 
 
-@router.get("/track/{track_id}")
+@router.get("/tracks/{track_id}")
 def get_track(track_id: str):
     result = spotify_call(
         requests.Request(
