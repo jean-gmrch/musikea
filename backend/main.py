@@ -2,8 +2,8 @@ from fastapi import FastAPI
 
 from .config import settings
 
-from .spotify import router as spotify_router
+from .api import router as api_router
 
 
 app = FastAPI()
-app.include_router(spotify_router)
+app.include_router(api_router)
