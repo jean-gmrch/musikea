@@ -1,5 +1,7 @@
 from functools import lru_cache
 
+from bs4 import BeautifulSoup
+
 import requests
 from bs4 import BeautifulSoup
 from fastapi import APIRouter, HTTPException, Request
