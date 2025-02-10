@@ -7,6 +7,8 @@ services:
     <<: *service
     container_name: backend-dev
     build: ./backend
+    volumes:
+      - ./backend:/usr/src/app
 
   frontend:
     <<: *service
@@ -14,6 +16,8 @@ services:
     build: ./frontend
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/usr/src/app
   
   nginx:
     <<: *service
