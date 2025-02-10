@@ -6,65 +6,78 @@ export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [timer, setTimer] = useState(null); // État pour gérer le timer
+  const apiSearchTrackURL = `/api/search-track?query=`
 
   const handleSearch = async (term) => {
     try {
       console.log(term)
-      const response =  await axios.get(`/api/search-track?query=${term}`);
+      // const response =  await axios.get(apiSearchTrackURL+term);
       // Remplace cette partie par l'appel API si nécessaire
-      // const response = [
-      //   {
-      //     "name": "Le Guide du Dev",
-      //     "author": "Jean Dupont",
-      //     "image": "https://source.unsplash.com/random/200x300?book"
-      //   },
-      //   {
-      //     "name": "React pour les Pros",
-      //     "author": "Marie Curie",
-      //     "image": "https://source.unsplash.com/random/200x300?react"
-      //   },
-      //   {
-      //     "name": "Next.js Mastery",
-      //     "author": "Albert Einstein",
-      //     "image": "https://source.unsplash.com/random/200x300?nextjs"
-      //   },
-      //   {
-      //     "name": "JavaScript Moderne",
-      //     "author": "Isaac Newton",
-      //     "image": "https://source.unsplash.com/random/200x300?javascript"
-      //   },
-      //   {
-      //     "name": "CSS Avancé",
-      //     "author": "Ada Lovelace",
-      //     "image": "https://source.unsplash.com/random/200x300?css"
-      //   },
-      //   {
-      //     "name": "HTML de A à Z",
-      //     "author": "Nikola Tesla",
-      //     "image": "https://source.unsplash.com/random/200x300?html"
-      //   },
-      //   {
-      //     "name": "Node.js et Express",
-      //     "author": "Elon Musk",
-      //     "image": "https://source.unsplash.com/random/200x300?nodejs"
-      //   },
-      //   {
-      //     "name": "Base de Données SQL",
-      //     "author": "Alan Turing",
-      //     "image": "https://source.unsplash.com/random/200x300?database"
-      //   },
-      //   {
-      //     "name": "Développement Mobile",
-      //     "author": "Steve Jobs",
-      //     "image": "https://source.unsplash.com/random/200x300?mobile"
-      //   },
-      //   {
-      //     "name": "Cybersécurité 101",
-      //     "author": "Edward Snowden",
-      //     "image": "https://source.unsplash.com/random/200x300?security"
-      //   }
-      // ];
-      setResults(response.data); // Stocke la réponse dans `results`
+      const response = [
+        {
+          "idSpotify": "1",
+          "name": "Le Guide du Dev",
+          "author": "Jean Dupont",
+          "image": "https://source.unsplash.com/random/200x300?book"
+        },
+        {
+          "idSpotify": "1",
+          "name": "React pour les Pros",
+          "author": "Marie Curie",
+          "image": "https://source.unsplash.com/random/200x300?react"
+        },
+        {
+          "idSpotify": "1",
+          "name": "Next.js Mastery",
+          "author": "Albert Einstein",
+          "image": "https://source.unsplash.com/random/200x300?nextjs"
+        },
+        {
+          "idSpotify": "1",
+          "name": "JavaScript Moderne",
+          "author": "Isaac Newton",
+          "image": "https://source.unsplash.com/random/200x300?javascript"
+        },
+        {
+          "idSpotify": "1",
+          "name": "CSS Avancé",
+          "author": "Ada Lovelace",
+          "image": "https://source.unsplash.com/random/200x300?css"
+        },
+        {
+          "idSpotify": "1",
+          "name": "HTML de A à Z",
+          "author": "Nikola Tesla",
+          "image": "https://source.unsplash.com/random/200x300?html"
+        },
+        {
+          "idSpotify": "1",
+          "name": "Node.js et Express",
+          "author": "Elon Musk",
+          "image": "https://source.unsplash.com/random/200x300?nodejs"
+        },
+        {
+          "idSpotify": "1",
+          "name": "Base de Données SQL",
+          "author": "Alan Turing",
+          "image": "https://source.unsplash.com/random/200x300?database"
+        },
+        {
+          "idSpotify": "1",
+          "name": "Développement Mobile",
+          "author": "Steve Jobs",
+          "image": "https://source.unsplash.com/random/200x300?mobile"
+        },
+        {
+          "idSpotify": "1",
+          "name": "Cybersécurité 101",
+          "author": "Edward Snowden",
+          "image": "https://source.unsplash.com/random/200x300?security"
+        }
+      ];
+      
+      // setResults(response.data); // Stocke la réponse dans `results`
+      setResults(response);
     } catch (error) {
       console.error("Erreur lors de la récupération des données :", error);
     }
