@@ -13,6 +13,7 @@ services:
   frontend:
     <<: *service
     container_name: frontend-dev
+    command: npm run dev
     build: ./frontend
     depends_on:
       - backend
