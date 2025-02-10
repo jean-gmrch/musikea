@@ -91,3 +91,36 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
         "next": next_url,
         "previous": previous_url,
     }
+
+
+@router.get("/track/{track_id}")
+def track(track_id: str):
+    result = call(
+        requests.Request(
+            method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
+        )
+    )
+
+    if result.status_code != 200:
+        return result.json()
+
+    return unpack_track(result.json())
+
+
+@router.get("/search/random")
+def random_track():
+    result = requests.get(
+        url="https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/appV2/getRandomTrack",
+        params={
+            "market": "random",
+            "genre": "random",
+            "decade": "all",
+            "tag_new": "false",
+            "exclude_singles": "false",
+        },
+    )
+    
+    if result.status_code != 200:
+        return result.json()
+    
+    return result.json()["data"]["track"]["id"]
