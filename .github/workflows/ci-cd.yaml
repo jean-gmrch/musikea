@@ -41,7 +41,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Set Docker Tag
-        id: vars
         run: |
           if [ "${{ github.event_name }}" = "release" ]; then
             TAG=${{ github.ref_name }}
@@ -55,8 +54,11 @@ jobs:
 
       - name: Build and Push image
         uses: docker/build-push-action@v5
+        env:
+          DOCKER_TAG: ${{ env.DOCKER_TAG }}
         with:
           context: ${{ matrix.service }}
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}-${{ matrix.service }}:${{ env.DOCKER_TAG }}

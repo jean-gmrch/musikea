@@ -12,7 +12,7 @@ services:
     image: jeangmrch/musikea-frontend:latest
     depends_on:
       - backend
-  
+
   nginx:
     <<: *service
     image: nginx:latest
