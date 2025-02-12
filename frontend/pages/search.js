@@ -60,6 +60,16 @@ export default function SearchPage() {
     }
   }
 
+  const handleRandomSearch = async () => {
+    try {
+      const response = await axios.get('/api/search/random');
+      let result = response.data
+      window.location.href = '/lyrics/' + result
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
+    }
+  }
+
   return (
     <div className={styles.searchContainer}>
       <input
@@ -69,7 +79,7 @@ export default function SearchPage() {
         value={searchTerm}
         onChange={handleChange} // Utilise la méthode handleChange
       />
-      <button className={styles.searchButton}>Aléatoire</button>
+      <button className={styles.searchButton} onClick={handleRandomSearch}>Aléatoire</button>
 
       {/* Affichage des résultats */}
       <div className={styles.searchResultContainer}>
