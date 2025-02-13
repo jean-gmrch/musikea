@@ -1,9 +1,8 @@
 from functools import lru_cache
 
-from bs4 import BeautifulSoup
-
 import requests
-from fastapi import APIRouter, Request
+from bs4 import BeautifulSoup
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from .config import settings
@@ -38,7 +37,6 @@ def spotify_call(request: requests.Request) -> requests.Response:
 
     with requests.Session() as session:
         prepared_request = request.prepare()
-        print(prepared_request.url)
         response = session.send(prepared_request)
 
     if response.status_code == 401:
@@ -68,7 +66,7 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
     )
 
     if result.status_code != 200:
-        return result.json()
+        raise HTTPException(status_code=result.status_code, detail=result.text)
 
     tracks = map(unpack_track, result.json()["tracks"]["items"])
 
@@ -109,7 +107,7 @@ def get_random_track():
     )
 
     if result.status_code != 200:
-        return result.json()
+        raise HTTPException(status_code=result.status_code, detail=result.text)
 
     return result.json()["data"]["track"]["id"]
 
@@ -123,7 +121,7 @@ def get_track(track_id: str):
     )
 
     if result.status_code != 200:
-        return result.json()
+        raise HTTPException(status_code=result.status_code, detail=result.text)
 
     return unpack_track(result.json())
 
