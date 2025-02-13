@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router;
 import { useEffect, useState } from 'react';
 import styles from '@/styles/Search.module.css';
 import axios from 'axios';
@@ -29,7 +29,6 @@ export default function Page() {
     <div>
       <h2>Lyrics </h2>
       <p>Post: {router.query.id}</p>
-      
       <div className={styles.searchResultContainer}>
         {track.name}
       </div>
