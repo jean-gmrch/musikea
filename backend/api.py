@@ -93,6 +93,20 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
     }
 
 
+@router.get("/tracks/{track_id}")
+def track(track_id: str):
+    result = call(
+        requests.Request(
+            method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
+        )
+    )
+
+    if result.status_code != 200:
+        return result.json()
+
+    return unpack_track(result.json())
+
+
 @router.get("/search/random")
 def get_random_track():
     result = requests.get(
