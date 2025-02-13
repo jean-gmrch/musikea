@@ -7,7 +7,7 @@ export default function MusicCard(musicInfo) {
 
 
     return (
-        <Link href={"/lyrics/"+musicInfo.music.idSpotify} >
+        <Link href={"/lyrics/"+musicInfo.music.id} >
             <div className={styles.articleCard}>
                 <div className={styles.content}>
                     <p className={styles.date}>{musicInfo.music.author}</p>

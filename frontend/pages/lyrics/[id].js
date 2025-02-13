@@ -1,9 +1,12 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import styles from '@/styles/Search.module.css';
+import axios from 'axios';
+
  
 export default function Page() {
   const router = useRouter()
-  const [track, setTrack] = useState(null);
+  const [track, setTrack] = useState("");
 
   const apiTrackUrl = "/api/track/" + router.query.id;
 
@@ -26,6 +29,10 @@ export default function Page() {
     <div>
       <h2>Lyrics </h2>
       <p>Post: {router.query.id}</p>
+      
+      <div className={styles.searchResultContainer}>
+        {track.name}
+      </div>
     </div>
   )
 }
