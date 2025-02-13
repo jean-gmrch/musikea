@@ -1,7 +1,5 @@
 from functools import lru_cache
 
-from bs4 import BeautifulSoup
-
 import requests
 from bs4 import BeautifulSoup
 from fastapi import APIRouter, HTTPException, Request
@@ -93,6 +91,25 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
         "next": next_url,
         "previous": previous_url,
     }
+
+
+@router.get("/search/random")
+def get_random_track():
+    result = requests.get(
+        url="https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/appV2/getRandomTrack",
+        params={
+            "market": "random",
+            "genre": "random",
+            "decade": "all",
+            "tag_new": "false",
+            "exclude_singles": "false",
+        },
+    )
+
+    if result.status_code != 200:
+        raise HTTPException(status_code=result.status_code, detail=result.text)
+
+    return result.json()["data"]["track"]["id"]
 
 
 @router.get("/tracks/{track_id}")
