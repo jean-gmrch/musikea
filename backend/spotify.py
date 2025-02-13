@@ -93,7 +93,7 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
     }
 
 
-@router.get("/track/{track_id}")
+@router.get("/tracks/{track_id}")
 def track(track_id: str):
     result = call(
         requests.Request(
