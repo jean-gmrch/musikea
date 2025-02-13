@@ -8,7 +8,7 @@ export default function Page() {
   const router = useRouter()
   const [track, setTrack] = useState("");
 
-  const apiTrackUrl = "/api/track/" + router.query.id;
+  const apiTrackUrl = "/api/tracks/" + router.query.id;
 
   async function fetchTrack() {
     try {
