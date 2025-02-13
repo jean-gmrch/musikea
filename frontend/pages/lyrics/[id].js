@@ -29,7 +29,6 @@ export default function Page() {
     <div>
       <h2>Lyrics </h2>
       <p>Post: {router.query.id}</p>
-      
       <div className={styles.searchResultContainer}>
         {track.name}
       </div>
