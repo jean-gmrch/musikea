@@ -100,9 +100,9 @@ def track(track_id: str):
             method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
         )
     )
-
+        
     if result.status_code != 200:
-        return result.json()
+        raise HTTPException(status_code=result.status_code, detail=result.text)
 
     return unpack_track(result.json())
 
