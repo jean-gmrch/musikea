@@ -149,7 +149,7 @@ def lyrics(track_id: str):
     track = get_track(track_id)
     response = requests.get(
         settings.GENIUS_API_URL + "/search",
-        params={"q": track.name},
+        params={"q": f"{track.name} {track.artists}"},
         headers={"Authorization": f"Bearer {settings.GENIUS_ACCESS_TOKEN}"},
     )
 
