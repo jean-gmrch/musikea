@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 import requests
+from bs4 import BeautifulSoup
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
@@ -17,7 +18,7 @@ class TrackResult(BaseModel):
 
 
 @lru_cache(maxsize=1)
-def access_token():
+def spotify_access_token():
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
         "grant_type": "client_credentials",
@@ -30,18 +31,17 @@ def access_token():
     return response_data.get("access_token")
 
 
-def call(request: requests.Request) -> requests.Response:
-    token = access_token()
+def spotify_call(request: requests.Request) -> requests.Response:
+    token = spotify_access_token()
     request.headers["Authorization"] = f"Bearer {token}"
 
     with requests.Session() as session:
         prepared_request = request.prepare()
-        print(prepared_request.url)
         response = session.send(prepared_request)
 
     if response.status_code == 401:
-        access_token.cache_clear()
-        return call(request)
+        spotify_access_token.cache_clear()
+        return spotify_call(request)
 
     return response
 
@@ -57,7 +57,7 @@ def unpack_track(track: dict) -> TrackResult:
 
 @router.get("/search")
 def search(query: str, limit: int = 10, offset: int = 0, request: Request = None):
-    result = call(
+    result = spotify_call(
         requests.Request(
             method="GET",
             url=settings.SPOTIFY_API_URL + "/search",
@@ -93,22 +93,8 @@ def search(query: str, limit: int = 10, offset: int = 0, request: Request = None
     }
 
 
-@router.get("/tracks/{track_id}")
-def track(track_id: str):
-    result = call(
-        requests.Request(
-            method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
-        )
-    )
-        
-    if result.status_code != 200:
-        raise HTTPException(status_code=result.status_code, detail=result.text)
-
-    return unpack_track(result.json())
-
-
 @router.get("/search/random")
-def random_track():
+def get_random_track():
     result = requests.get(
         url="https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/appV2/getRandomTrack",
         params={
@@ -119,8 +105,61 @@ def random_track():
             "exclude_singles": "false",
         },
     )
-    
+
     if result.status_code != 200:
-        return result.json()
-    
+        raise HTTPException(status_code=result.status_code, detail=result.text)
+
     return result.json()["data"]["track"]["id"]
+
+
+@router.get("/tracks/{track_id}")
+def get_track(track_id: str):
+    result = spotify_call(
+        requests.Request(
+            method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
+        )
+    )
+
+    if result.status_code != 200:
+        raise HTTPException(status_code=result.status_code, detail=result.text)
+
+    return unpack_track(result.json())
+
+
+def lyrics_from_song_api_path(song_api_path):
+    song_url = settings.GENIUS_API_URL + song_api_path
+    response = requests.get(
+        song_url, headers={"Authorization": f"Bearer {settings.GENIUS_ACCESS_TOKEN}"}
+    )
+    json = response.json()
+    path = json["response"]["song"]["path"]
+    
+    page_url = "http://genius.com" + path
+    page = requests.get(page_url)
+    soup = BeautifulSoup(page.text, "html.parser")
+    
+    lyrics_divs = soup.find_all("div", {"data-lyrics-container": "true"})
+    lyrics = "\n".join(div.get_text(separator="\n", strip=True) for div in lyrics_divs)
+    
+    return lyrics
+
+
+@router.get("/lyrics/{track_id}")
+def lyrics(track_id: str):
+    track = get_track(track_id)
+    response = requests.get(
+        settings.GENIUS_API_URL + "/search",
+        params={"q": track.name},
+        headers={"Authorization": f"Bearer {settings.GENIUS_ACCESS_TOKEN}"},
+    )
+
+    if response.status_code != 200:
+        return response.json()
+
+    result = response.json()["response"]["hits"]
+    if not result:
+        return {"lyrics": "No lyrics found"}
+
+    first = result[0]["result"]
+
+    return lyrics_from_song_api_path(first["api_path"])
