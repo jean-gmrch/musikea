@@ -113,39 +113,6 @@ def get_random_track():
 
 
 @router.get("/tracks/{track_id}")
-def track(track_id: str):
-    result = spotify_call(
-        requests.Request(
-            method="GET", url=settings.SPOTIFY_API_URL + f"/tracks/{track_id}"
-        )
-    )
-        
-    if result.status_code != 200:
-        raise HTTPException(status_code=result.status_code, detail=result.text)
-
-    return unpack_track(result.json())
-
-
-@router.get("/search/random")
-def get_random_track():
-    result = requests.get(
-        url="https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/appV2/getRandomTrack",
-        params={
-            "market": "random",
-            "genre": "random",
-            "decade": "all",
-            "tag_new": "false",
-            "exclude_singles": "false",
-        },
-    )
-
-    if result.status_code != 200:
-        raise HTTPException(status_code=result.status_code, detail=result.text)
-
-    return result.json()["data"]["track"]["id"]
-
-
-@router.get("/tracks/{track_id}")
 def get_track(track_id: str):
     result = spotify_call(
         requests.Request(

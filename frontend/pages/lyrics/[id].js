@@ -21,20 +21,10 @@ export default function Page() {
       const response = await axios.get(apiTrackUrl);
       console.log(response.data);
       setTrack(response.data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-    }
-  }
 
-  async function fetchLyrics() {
-    if (!router.query.id) {
-      return;
-    }
-
-    try {
       let apiLyricsUrl = "/api/lyrics/" + router.query.id;
-      const response = await axios.get(apiLyricsUrl);
-      setLyrics(response.data);
+      const response_lyrics = await axios.get(apiLyricsUrl);
+      setLyrics(response_lyrics.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des données :", error);
     }
@@ -42,7 +32,6 @@ export default function Page() {
 
   useEffect(() => {
     fetchTrack();
-    fetchLyrics();
   }, [router.query.id])
 
   return (
