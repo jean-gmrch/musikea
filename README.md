@@ -7,39 +7,29 @@ Ce projet est un site web conteneurisé qui utilise l'API Spotify pour proposer 
 
 ## Getting Started
 
-First, run the development server:
+Creez un fichier `.env` à la racine du projet et ajoutez-y les variables d'environnement suivantes :
+```
+IMAGES_VERSION=3.0.0
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+SPOTIPY_CLIENT_ID=your_spotify_client_id
+SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
+
+GENIUS_ACCESS_TOKEN=your_genius_api_token
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pour lancer le projet, exécutez la commande suivante :
+```bash
+docker-compose up
+```
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Development
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Pour lancer le projet en mode développement, exécutez la commande suivante :
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## GitHub workflow
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Le workflow GitHub est déclenché à chaque merge sur la branche `main`. Il construit l'image Docker, la pousse sur Docker Hub.
+Lors d'une release, le workflow met le tag correspondant sur l'image Docker.
