@@ -17,6 +17,7 @@ export default function Page() {
 
     try {
       let apiTrackUrl = "/api/tracks/" + router.query.id;
+
       const response = await axios.get(apiTrackUrl);
       console.log(response.data);
       setTrack(response.data);
@@ -44,7 +45,6 @@ export default function Page() {
     fetchLyrics();
   }, [router.query.id])
 
-
   return (
     <div>
       <h2>Lyrics </h2>
@@ -53,7 +53,6 @@ export default function Page() {
       <div className={styles.searchResultContainer} style={{ whiteSpace: "pre-line" }}>
         {lyrics == "" ? <p>loading ...</p> : lyrics}
       </div>
-
     </div>
   )
 }
