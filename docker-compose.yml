@@ -5,11 +5,11 @@ x-service: &service
 services:
   backend:
     <<: *service
-    image: jeangmrch/musikea-backend:latest
+    image: jeangmrch/musikea-backend:${IMAGES_VERSION:-latest}
 
   frontend:
     <<: *service
-    image: jeangmrch/musikea-frontend:latest
+    image: jeangmrch/musikea-frontend:${IMAGES_VERSION:-latest}
     depends_on:
       - backend
 
